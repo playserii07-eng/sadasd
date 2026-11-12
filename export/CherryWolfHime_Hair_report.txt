@@ -1,0 +1,22 @@
+triangles: 3514
+quads: 1584
+tris: 346
+ngons: 0
+verts: 1893
+non_manifold_edges: 0
+loose_verts: 0
+zero_area_faces: 0
+duplicate_verts: 0
+closed_shells: 68
+inverted_shells: 0
+mirrored_uv_faces: 0
+uv_min: 0.0087890625
+uv_max: 0.9912109375
+uv_maps: 1
+materials: 1
+color_attributes: 0
+transforms_applied: True
+size_xyz: [2.224, 1.854, 3.149]
+extent_from_attachment: {'side': 1.13, 'up': 0.256, 'down': 2.893, 'front': 0.724, 'back': 1.131}
+bbox_centre_from_attachment: [0.018, 0.203, -1.319]
+RESULT: PASS
