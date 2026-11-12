@@ -9,7 +9,7 @@ Options (after `--` when run through blender):
     --keep-curves    keep the curves already in the .blend (hand edits) and only redo stages 3-7
 
 Stages: 0 reference avatar > 1 blocking > 2 curves (Bezier + bevel profile + taper + fill caps)
-        > 3 convert + clean > 4 UV > 5 texture > 6 checks > 7 FBX + .blend
+        > 3 convert + clean > 4 UV > 5 texture > 6 checks > 7 FBX + OBJ + .blend
 1 Blender unit = 1 stud, avatar faces -Y, character's left = +X.
 """
 import math
@@ -1002,6 +1002,17 @@ def main():
         filepath=os.path.join(OUT, NAME + ".fbx"), use_selection=True, object_types={"MESH"},
         apply_scale_options="FBX_SCALE_UNITS", global_scale=1.0, path_mode="COPY",
         embed_textures=True, bake_anim=False, add_leaf_bones=False, mesh_smooth_type="OFF")
+    bpy.ops.wm.obj_export(                          # same axes and scale; the .mtl names the PNG beside it
+        filepath=os.path.join(OUT, NAME + ".obj"), export_selected_objects=True,
+        forward_axis="NEGATIVE_Z", up_axis="Y", global_scale=1.0, export_uv=True, export_normals=True,
+        export_materials=True, path_mode="STRIP", export_triangulated_mesh=False,
+        export_smooth_groups=True)
+    mtl = os.path.join(OUT, NAME + ".mtl")
+    with open(mtl) as fh:
+        text = fh.read()
+    if "\nKd " not in text:                         # Blender omits Kd under a texture, but map_Kd is
+        with open(mtl, "w") as fh:                  # multiplied by Kd: state it as white
+            fh.write(text.replace("\nmap_Kd ", "\nKd 1.000000 1.000000 1.000000\nmap_Kd "))
     for name in SOURCE_COLLECTIONS[1:]:
         layers[name].hide_viewport = True           # editable source stays in the file, hidden
     for im in bpy.data.images:

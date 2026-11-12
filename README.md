@@ -12,11 +12,12 @@ tiger-striped strand on the character's left.
 | File | What it is |
 | --- | --- |
 | `export/CherryWolfHime_Hair.fbx` | The accessory mesh, colour texture embedded. Import this into Studio. |
+| `export/CherryWolfHime_Hair.obj`, `.mtl` | The same mesh as OBJ, for tools that don't read FBX. The `.mtl` points at the colour PNG, so keep the three files together. |
 | `export/CherryWolfHime_Hair_Color.png` | 1024×1024 colour texture (also embedded in the FBX). |
 | `export/CherryWolfHime_Hair_Normal.png` | Optional 256×256 normal map (OpenGL / Y+) for a `SurfaceAppearance`. |
 | `export/CherryWolfHime_Hair.blend` | Source scene (saved from Blender 4.2 LTS): reference avatar, blocking guides, editable curves, final mesh. |
 | `export/CherryWolfHime_Hair_report.txt` | Output of the pre-export checks. |
-| `previews/` | Renders, wireframes and the UV layout. |
+| `previews/` | Renders and the UV layout. |
 | `blender/build_hair.py` | Rebuilds everything above. `blender/render_previews.py` renders the previews. |
 
 ## Result against the requirements
@@ -51,6 +52,10 @@ head and the top of the torso. The hair is rigid, so the long layers follow the 
 6. Optional gloss: add a `SurfaceAppearance` with `ColorMap` = the colour PNG and `NormalMap` =
    the normal PNG.
 
+The `.obj` imports the same way (1 unit = 1 stud, Y up, same facing as the FBX). OBJ cannot carry
+a texture inside the file and Roblox documents texture import only for FBX and glTF, so if the
+hair arrives untextured, set the `MeshPart`'s `TextureID` to the colour PNG.
+
 ## Rebuild or change it
 
 ```
@@ -68,7 +73,7 @@ The script follows the usual manual order and keeps each stage in the `.blend`:
 | Curves: Bezier + bevel profile + taper + fill caps | `build_specs` (mirrored tiers, then asymmetry), `make_strand_curve` | `HAIR_02_Curve_Tools`, `HAIR_03_Curves` (bangs → sides → crown → flips → long → loose → striped) |
 | Convert, split cap n-gons, clean | `strand_to_mesh`, `scalp_mesh` | `HAIR_04_EXPORT` |
 | UV + texture | `rect_uv`, `paint_textures` | material `CherryWolfHime_Hair_MAT` |
-| Checks + FBX | `run_checks`, `main` | — |
+| Checks + FBX / OBJ | `run_checks`, `main` | — |
 
 Style changes (lengths, widths, strand counts, colours, stripe positions) are the tables in
 `build_specs` and the constants at the top of the file.
